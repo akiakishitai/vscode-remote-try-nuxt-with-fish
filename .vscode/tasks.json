@@ -6,7 +6,9 @@
     "options": {
       "shell": {
         "executable": "/bin/bash",
-        "args": ["-c"]
+        "args": [
+          "-c"
+        ]
       }
     }
   },
@@ -24,7 +26,10 @@
     {
       "label": "Dotfiles clone & install",
       "type": "shell",
-      "dependsOn": ["dotfiles clone", "dotfiles install"],
+      "dependsOn": [
+        "dotfiles clone",
+        "dotfiles install"
+      ],
       "dependsOrder": "sequence"
     },
     {
@@ -32,6 +37,11 @@
       "type": "shell",
       "command": "git clone ${input:source-repo} .",
       "detail": "Git clone the sourece code here from prompt repository"
+    },
+    {
+      "label": "create nuxt app",
+      "type": "shell",
+      "command": "yarn create nuxt-app",
     }
   ],
   "inputs": [
