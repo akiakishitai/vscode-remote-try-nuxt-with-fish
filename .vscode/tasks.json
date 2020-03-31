@@ -41,7 +41,7 @@
     {
       "label": "create nuxt app",
       "type": "shell",
-      "command": "yarn create nuxt-app",
+      "command": "yarn create nuxt-app ${input:nuxt-source}",
     }
   ],
   "inputs": [
@@ -54,6 +54,12 @@
       "id": "source-repo",
       "type": "promptString",
       "description": "your source code repository url"
+    },
+    {
+      "id": "nuxt-source",
+      "type": "promptString",
+      "description": "nuxt",
+      "default": "./app"
     }
   ]
 }
