@@ -2,17 +2,18 @@ FROM debian:buster-slim as builder
 WORKDIR /work
 
 RUN apt update && apt install -y --no-install-recommends \
-  git curl ca-certificates locales
+  locales
 
 # locale generate
 RUN sed -i \
-  -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' \
-  -e 's/# ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' \
+  -e 's/# \(en_US.UTF-8 UTF-8\)/\1/' \
+  -e 's/# \(ja_JP.UTF-8 UTF-8\)/\1/' \
   /etc/locale.gen \
   && locale-gen
 
 # ----------
 FROM node:12-buster-slim
+WORKDIR /opt
 
 ARG USERNAME=node
 ARG WORKSPACE=/workspaces
@@ -23,8 +24,10 @@ ENV LANG=C.UTF-8 TZ=Asia/Tokyo DEBIAN_FRONTEND=noninteractive HOME=/home/$USERNA
 
 # require library
 RUN apt update && apt install -y --no-install-recommends \
-  apt-utils git openssh-client curl ca-certificates \
+  apt-utils git git-lfs openssh-client curl ca-certificates \
   gnupg fzf \
+  # register github.com host key
+  && ssh-keyscan -H github.com >> /etc/ssh/ssh_known_hosts \
   # fish shell
   && echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /' \
   > /etc/apt/sources.list.d/shells:fish:release:3.list \
@@ -39,9 +42,6 @@ RUN apt update && apt install -y --no-install-recommends \
   # vsnotes
   && mkdir -p $NOTES_ROOT \
   && chown node ${NOTES_ROOT} \
-  #&& runuser -l $USERNAME -c "mkdir -p /home/$USERNAME/dotfiles" \
-  # register github.com host key
-  && ssh-keyscan -H github.com >> /etc/ssh/ssh_known_hosts \
   # Clean up
   && apt autoremove -y \
   && apt clean -y \
